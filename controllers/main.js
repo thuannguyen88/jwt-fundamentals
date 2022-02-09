@@ -26,19 +26,43 @@ const login = async (req, res) => {
   const token = jwt.sign({ id, username }, process.env.JWT_SECRET, {
     expiresIn: "30d",
   });
-//   console.log(username, password);
+  //   console.log(username, password);
 
-res.status(200).json({msg:"user created", token})
-//   res.send("Dummy Register and Login Route");
+  res.status(200).json({ msg: "user created", token });
+  //   res.send("Dummy Register and Login Route");
 };
 
 const dashboard = async (req, res) => {
-  const luckyNumber = Math.floor(Math.random() * 100);
-  // get random numbers between 1 and 100
-  res.status(200).json({
-    message: `Hello Placeholder User`,
-    secret: `Here is your authorised data, your lucky number is ${luckyNumber}`,
-  });
+  // assign authorisation header to variable
+  const authHeader = req.headers.authorization;
+
+  //if the auth header doesnt exist or string doesnt start with bearer we throw an error
+  // 401 is the unauthorized error
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    throw new CustomAPIError("No token provided", 401);
+  }
+
+  //split the string and store the token value
+  const token = authHeader.split(" ")[1];
+  console.log(token);
+
+  //verify the token
+  // pass in token and secretkey
+  // if the token is expired we can handle that in the catch block
+  // decoded gets you back data object, in this case; id, username, iat (issued at) and exp (expiration) which comes from our payload that we passed in jwt.sign when we signed the token
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+   //  console.log(decoded);
+    const luckyNumber = Math.floor(Math.random() * 100);
+    // get random numbers between 1 and 100
+    res.status(200).json({
+      message: `Hello ${decoded.username}`,
+      secret: `Here is your authorised data, your lucky number is ${luckyNumber}`,
+    });
+  } catch (error) {
+    throw new CustomAPIError("Not authorised to access route", 401);
+  }
+
 };
 
 export { login, dashboard };
