@@ -1,4 +1,4 @@
-import CustomAPIError from "../errors/custom-error.js";
+import { UnauthenticatedError } from "../errors/index.js";
 import jwt from "jsonwebtoken";
 
 // set up authorisation middleware so we can use for our routes
@@ -7,7 +7,7 @@ const authenticationMiddleware = async (req, res, next) => {
   //   console.log(req.headers.authorization);
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    throw new CustomAPIError("No token provided", 401);
+    throw new UnauthenticatedError("No token provided");
   }
   const token = authHeader.split(" ")[1];
 
@@ -20,7 +20,7 @@ const authenticationMiddleware = async (req, res, next) => {
     req.user = { id, username };
     next();
   } catch (error) {
-    throw new CustomAPIError("Not authorised to access route", 401);
+    throw new UnauthenticatedError("Not authorised to access this route");
   }
   //   next();
 };

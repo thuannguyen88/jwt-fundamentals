@@ -1,4 +1,4 @@
-import CustomAPIError from "../errors/custom-error.js";
+import { BadRequestError } from "../errors/index.js";
 import jwt from "jsonwebtoken";
 // check username and password in post(login) request
 // if it exists create new JWT
@@ -11,9 +11,9 @@ const login = async (req, res) => {
   // check validation through database i.e. mongo
   // set up another validation layer with joi package
   // check in the controller
-// 400 error, is a bad request error
+  // 400 error, is a bad request error
   if (!username || !password) {
-    throw new CustomAPIError("Please provide email and password", 400);
+    throw new BadRequestError("Please provide email and password");
   }
 
   // dummy database, this is a demo, normally provided by database
@@ -52,7 +52,7 @@ const dashboard = async (req, res) => {
   //     //  console.log(decoded);
 
   // getting req.user from our auth middleware, and will pass req.user.username into our response
-  console.log(req.user);
+  // console.log(req.user);
 
   const luckyNumber = Math.floor(Math.random() * 100);
   //     // get random numbers between 1 and 100
