@@ -11,7 +11,7 @@ const login = async (req, res) => {
   // check validation through database i.e. mongo
   // set up another validation layer with joi package
   // check in the controller
-
+// 400 error, is a bad request error
   if (!username || !password) {
     throw new CustomAPIError("Please provide email and password", 400);
   }
