@@ -34,35 +34,35 @@ const login = async (req, res) => {
 
 const dashboard = async (req, res) => {
   // assign authorisation header to variable
-  const authHeader = req.headers.authorization;
-
+  //   const authHeader = req.headers.authorization;
   //if the auth header doesnt exist or string doesnt start with bearer we throw an error
   // 401 is the unauthorized error
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    throw new CustomAPIError("No token provided", 401);
-  }
-
+  //   if (!authHeader || !authHeader.startsWith("Bearer ")) {
+  //     throw new CustomAPIError("No token provided", 401);
+  //   }
   //split the string and store the token value
-  const token = authHeader.split(" ")[1];
-  console.log(token);
-
+  //   const token = authHeader.split(" ")[1];
+  //   console.log(token);
   //verify the token
   // pass in token and secretkey
   // if the token is expired we can handle that in the catch block
   // decoded gets you back data object, in this case; id, username, iat (issued at) and exp (expiration) which comes from our payload that we passed in jwt.sign when we signed the token
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-   //  console.log(decoded);
-    const luckyNumber = Math.floor(Math.random() * 100);
-    // get random numbers between 1 and 100
-    res.status(200).json({
-      message: `Hello ${decoded.username}`,
-      secret: `Here is your authorised data, your lucky number is ${luckyNumber}`,
-    });
-  } catch (error) {
-    throw new CustomAPIError("Not authorised to access route", 401);
-  }
+  //   try {
+  //     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  //     //  console.log(decoded);
 
+  // getting req.user from our auth middleware, and will pass req.user.username into our response
+  console.log(req.user);
+
+  const luckyNumber = Math.floor(Math.random() * 100);
+  //     // get random numbers between 1 and 100
+  res.status(200).json({
+    message: `Hello ${req.user.username}`,
+    secret: `Here is your authorised data, your lucky number is ${luckyNumber}`,
+  });
+  //   } catch (error) {
+  //     throw new CustomAPIError("Not authorised to access route", 401);
+  //   }
 };
 
 export { login, dashboard };
