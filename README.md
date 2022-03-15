@@ -7,4 +7,5 @@ This was done with guidance from youtube tutorials
 ## To run in dev enviroment:
 
 'npm i' to install all dependencies
+
 'npm run start' to run on local host
